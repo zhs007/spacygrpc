@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package spacy;
+
+enum CMDTYPE {
+    NER = 0;
+}
+
+message Command {
+    CMDTYPE cmd = 1;
+    string str = 2;
+}
+
+message NERInfo {
+    string ent = 1;
+    string labelstr = 2;
+    int32 label = 3;    
+}
+
+message ReplyNER {
+    repeated NERInfo info = 1;
+}
+
+message ReplyCommand {
+    CMDTYPE cmd = 1;
+    oneof data {
+        ReplyNER ReplyNER = 2;
+    }
+}
+
+service SpacyServ {
+    rpc streamCommand (stream Command) returns (stream ReplyCommand) {}
+}
